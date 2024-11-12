@@ -1,0 +1,16 @@
+@use "sass:meta";
+body,
+button,
+input,
+select,
+optgroup,
+textarea {
+	color: $color__text-main;
+	font-family: $font__main;
+	font-weight: normal;
+	font-size: 1rem;
+	line-height: $font__line-height-body;
+}
+
+@include meta.load-css("headings");
+@include meta.load-css("copy");

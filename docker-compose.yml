@@ -1,0 +1,31 @@
+version: '3.3'
+# RENAME_THEME_NAME - имя вашей темы
+services:
+  db:
+    image: mariadb:10.5
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: no
+    environment:
+      MYSQL_ROOT_PASSWORD: RENAME_THEME_NAME
+      MYSQL_DATABASE: RENAME_THEME_NAME
+      MYSQL_USER: RENAME_THEME_NAME
+      MYSQL_PASSWORD: RENAME_THEME_NAME
+
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    ports:
+      - "8000:80"
+    restart: always
+    volumes:
+      - ./RENAME_THEME_NAME:/var/www/html/wp-content/themes/RENAME_THEME_NAME
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: RENAME_THEME_NAME
+      WORDPRESS_DB_PASSWORD: RENAME_THEME_NAME
+      WORDPRESS_DB_NAME: RENAME_THEME_NAME
+
+volumes:
+  db_data: {}
