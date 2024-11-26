@@ -1,37 +1,71 @@
 const path = require('path');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
-module.exports = {
-  entry: './assets/js/main.js', // Входной файл
-  output: {
-    filename: 'bundle.js', // Выходной файл
-    path: path.resolve(__dirname, './assets/js') // Директория для выходного файла
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js$/, // Обрабатываем все .js файлы
-        exclude: /node_modules/, // Исключаем папку node_modules
-        use: {
-          loader: 'babel-loader', // Используем babel-loader для обработки файлов
-          options: {
-            presets: ['@babel/preset-env'] // Указываем пресет для Babel
-          }
+module.exports = [
+  {
+    entry: {
+      main: ['./js/src/main.js', './css/src/main.scss']
+    },
+    output: {
+      filename: './js/build/[name].min.[fullhash].js',
+      path: path.resolve(__dirname),
+    },
+    module: {
+      rules: [
+        {
+          test: /\.(js|jsx)$/,
+          exclude: /node_modules/,
+          loader: 'babel-loader',
+        },
+        {
+          test: /\.(sass|scss)$/,
+          use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+        },
+        {
+          test: /\.(woff|woff2|eot|ttf|otf)$/,
+          type: 'asset/resource',
+          generator: {
+            filename: './css/build/font/[name][ext]',
+          },
+        },
+        {
+          test: /\.(png|jpg|gif)$/,
+          type: 'asset/resource',
+          generator: {
+            filename: './css/build/img/[name][ext]',
+          },
+        },
+      ],
+    },
+    plugins: [
+      new CleanWebpackPlugin({
+        cleanOnceBeforeBuildPatterns: ['./js/build/*', './css/build/*'],
+      }),
+      new MiniCssExtractPlugin({
+        filename: './css/build/main.min.[fullhash].css',
+      }),
+      new BrowserSyncPlugin(
+        {
+          host: 'localhost',
+          port: 3000,
+          proxy: 'http://localhost:8000/', // Укажи адрес своего локального сервера WordPress
+          files: [
+            './**/*.php', // Следим за изменениями PHP файлов
+            './css/build/*.css', // Следим за CSS
+            './js/build/*.js', // Следим за JS
+          ],
+        },
+        {
+          reload: true, // Автоперезагрузка страницы
         }
-      },
-      {
-        test: /\.css$/, // Обрабатываем все .css файлы
-        use: ['style-loader', 'css-loader'], // Используем style-loader и css-loader
-      },
-      {
-        test: /\.(woff|woff2|eot|ttf|otf|svg)$/, // Обрабатываем шрифты и иконки
-        use: {
-          loader: 'file-loader',
-          options: {
-            name: '[name].[ext]', // Сохраняем имя файла
-            outputPath: 'fonts/', // Папка для выходных шрифтов
-          }
-        }
-      }
-    ]
+      ),
+    ],
+    optimization: {
+      minimizer: [`...`, new CssMinimizerPlugin()],
+    },
+    watch: true, // Включаем режим watch
   }
-};
+];

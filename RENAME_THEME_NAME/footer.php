@@ -7,13 +7,9 @@
  *
  * @link https://developer.wordpress.org/themes/basics/template-files/#template-partials
  *
- * @package easy-connect-widget
  */
 
 ?>
-<footer id="footer" class="footer">
-</footer>
-</div>
 
 <?php wp_footer(); ?>
 

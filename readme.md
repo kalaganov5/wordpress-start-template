@@ -2,5 +2,7 @@
 1. Выполнить `docker-compose up`
 2. Перейдите в папку `cd RENAME_THEME_NAME`
 3. Выполнить `npm i`
-4. Выполните команду `npm run dev`
-5. Откройте  Local: http://localhost:3000 или External: http://192.168.3.12:3000 адрес
+
+npm run build - development webpack build (webpack --mode development).
+npm run dist - production webpack build, with code minification enabled (webpack --mode production).
+npm run watch - development watch command.
